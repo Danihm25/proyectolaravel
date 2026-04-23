@@ -8,59 +8,68 @@ use Illuminate\Http\Request;
 class EquipoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra la lista de equipos.
      */
     public function index()
     {
-        //
+        $equipos = Equipo::all();
+        // Ajustado a tu carpeta 'Equipo' (mayúscula)
+        return view('Equipo.index', compact('equipos'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo equipo.
      */
     public function create()
     {
-        //
+        return view('Equipo.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda el equipo en la base de datos.
      */
-    public function store(Request $request) {
-    $request->validate(['nombre' => 'required', 'marca' => 'required']);
-    Equipo::create($request->all());
-    return redirect()->route('equipos.index')->with('success', 'Equipo creado');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'marca' => 'required'
+        ]);
+
+        Equipo::create($request->all());
+
+        return redirect()->route('equipos.index')->with('success', 'Equipo creado');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar.
      */
-    public function edit(string $id)
+    public function edit(Equipo $equipo)
     {
-        //
+        // Es mejor pasar el modelo Equipo directamente que un string $id
+        return view('Equipo.edit', compact('equipo'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos del equipo.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Equipo $equipo)
     {
-        //
+        $request->validate([
+            'nombre' => 'required',
+            'marca' => 'required'
+        ]);
+
+        $equipo->update($request->all());
+
+        return redirect()->route('equipos.index')->with('success', 'Equipo actualizado');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el equipo.
      */
-    public function destroy(string $id)
+    public function destroy(Equipo $equipo)
     {
-        //
+        $equipo->delete();
+        return redirect()->route('equipos.index')->with('success', 'Equipo eliminado');
     }
 }
